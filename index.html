@@ -357,7 +357,7 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
   </div>
 
   <div class="floating-btn">
-    <button class="btn-start" onclick="startQuiz()">診断をはじめる <span class="btn-arrow">→</span></button>
+    <button id="btn-start-main" class="btn-start">診断をはじめる <span class="btn-arrow">→</span></button>
   </div>
 </div>
 
@@ -374,8 +374,8 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
     <div id="q-card-wrap"></div>
     <div id="early-note" class="early-note" style="display:none">✨ あなたの傾向が明確になってきました。次の問いで診断が完了する可能性があります。</div>
     <div class="quiz-nav">
-      <button class="btn-back" id="btn-back" onclick="goBack()" disabled>← 戻る</button>
-      <button class="btn-next" id="btn-next" onclick="goNext()" disabled>次へ →</button>
+      <button class="btn-back" id="btn-back" disabled>← 戻る</button>
+      <button class="btn-next" id="btn-next" disabled>次へ →</button>
     </div>
   </div>
 </div>
@@ -418,7 +418,7 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
     <div class="ptype-opts" id="ptype-opts"></div>
     <div class="quiz-nav" style="margin-top:24px">
       <div></div>
-      <button class="btn-next" id="btn-ptype-next" onclick="showResult()" disabled>結果を見る →</button>
+      <button class="btn-next" id="btn-ptype-next" disabled>結果を見る →</button>
     </div>
   </div>
 </div>
@@ -434,7 +434,7 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
     <div class="type-pair" id="type-pair"></div>
     <div class="res-cards" id="res-cards"></div>
     <div class="res-footer">
-      <button class="btn-restart" onclick="restart()">↩ もう一度診断する</button>
+      <button class="btn-restart" id="btn-restart">↩ もう一度診断する</button>
     </div>
   </div>
 </div>
@@ -697,7 +697,7 @@ function renderQuestion() {
     if(rankNum === 1){ btnCls+=' rank1'; badgeCls+=' r1'; badgeText='1位'; }
     else if(rankNum === 2){ btnCls+=' rank2'; badgeCls+=' r2'; badgeText='2位'; }
     else if(rankNum === 3){ btnCls+=' rank3'; badgeCls+=' r3'; badgeText='3位'; }
-    html += '<button class="' + btnCls + '" onclick="toggleRank(\'' + opt.l + '\')">';
+    html += '<button class="' + btnCls + '" data-label="' + opt.l + '">';
     html += '<span class="' + badgeCls + '">' + badgeText + '</span>';
     html += '<span class="opt-text">' + esc(opt.t) + '</span>';
     html += '</button>';
@@ -811,7 +811,7 @@ function showPartnerSelect() {
   var html = '';
   Object.keys(TYPES).forEach(function(k){
     var tt = TYPES[k];
-    html += '<button class="ptype-btn" id="ptype-' + k + '" onclick="selectPartner(\'' + k + '\')">';
+    html += '<button class="ptype-btn" id="ptype-' + k + '" data-ptype="' + k + '">';
     html += '<span class="ptype-emoji-badge">' + tt.emoji + '</span>';
     html += '<span><div class="ptype-name">' + esc(tt.name) + '</div>';
     html += '<div class="ptype-desc">' + esc(tt.short) + '</div></span>';
@@ -945,6 +945,39 @@ function esc(str) {
     .replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;');
 }
+
+/* ════════════════════════════════════
+   DOM確定後にすべてのイベントを登録
+   ── onclick属性は使わず addEventListener で統一
+════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function() {
+
+  /* ① 診断開始ボタン（フローティング固定） */
+  var btnStart = document.getElementById('btn-start-main');
+  if(btnStart) btnStart.addEventListener('click', startQuiz);
+
+  /* ② 診断画面の「戻る」「次へ」 */
+  document.getElementById('btn-back').addEventListener('click', goBack);
+  document.getElementById('btn-next').addEventListener('click', goNext);
+
+  /* ③ パートナー選択の「結果を見る」 */
+  document.getElementById('btn-ptype-next').addEventListener('click', showResult);
+
+  /* ④ 結果画面の「もう一度診断する」 */
+  document.getElementById('btn-restart').addEventListener('click', restart);
+
+  /* ⑤ 設問の選択肢ボタン（イベント委譲 – innerHTML で生成するため親要素で捕捉） */
+  document.getElementById('q-card-wrap').addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-label]');
+    if(btn) toggleRank(btn.getAttribute('data-label'));
+  });
+
+  /* ⑥ パートナー選択ボタン（イベント委譲） */
+  document.getElementById('ptype-opts').addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-ptype]');
+    if(btn) selectPartner(btn.getAttribute('data-ptype'));
+  });
+});
 </script>
 </body>
 </html>
