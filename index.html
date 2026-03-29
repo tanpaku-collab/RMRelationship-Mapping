@@ -313,6 +313,33 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
   .lp-desc br{display:none}
 }
 
+/* ─── クリック可能タイプバッジ（結果画面） ─── */
+.clickable-badge{
+  cursor:pointer;
+  transition:transform 0.2s, box-shadow 0.2s;
+}
+.clickable-badge:hover{
+  transform:translateY(-4px) scale(1.02);
+  box-shadow:0 8px 24px rgba(0,0,0,0.25);
+}
+.clickable-badge.badge-active.self{
+  border-color:var(--tiffany) !important;
+  box-shadow:0 0 0 2px rgba(129,216,208,0.4), 0 8px 24px rgba(0,0,0,0.2);
+}
+.clickable-badge.badge-active.partner{
+  border-color:var(--gold) !important;
+  box-shadow:0 0 0 2px rgba(201,169,110,0.4), 0 8px 24px rgba(0,0,0,0.2);
+}
+.badge-hint{
+  font-size:10px;
+  color:rgba(255,255,255,0.4);
+  margin-top:6px;
+  letter-spacing:0.05em;
+  transition:color 0.2s;
+}
+.clickable-badge:hover .badge-hint{color:rgba(255,255,255,0.7)}
+.clickable-badge.badge-active .badge-hint{color:var(--tiffany-light)}
+
 /* ─── タイプ解説カード（結果画面） ─── */
 .tdef-card{
   background:white;
@@ -594,12 +621,14 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
   <div class="ptype-wrap">
     <div class="ptype-header">
       <div style="display:inline-block;background:rgba(129,216,208,0.12);border:1px solid rgba(129,216,208,0.25);border-radius:40px;padding:6px 20px;font-size:11px;letter-spacing:0.2em;color:var(--tiffany-dark);text-transform:uppercase;margin-bottom:24px">Step 2 of 2</div>
-      <div class="my-type-card">
-        <div class="my-type-label">あなたの診断タイプ</div>
+      <div class="my-type-card" id="my-type-card-btn" style="cursor:pointer" title="クリックでタイプ詳細を表示">
+        <div class="my-type-label">あなたの診断タイプ <span style="font-size:10px;color:var(--tiffany-dark);margin-left:6px">▼ 詳細を見る</span></div>
         <div class="my-type-emoji" id="my-emoji">💗</div>
         <div class="my-type-name" id="my-name">—</div>
         <div class="my-type-desc" id="my-desc">—</div>
       </div>
+      <!-- タイプ詳細解説（クリックで展開） -->
+      <div id="ptype-self-def" style="display:none;margin-bottom:24px"></div>
     </div>
     <div class="ptype-q">パートナーに最も近いタイプを選んでください</div>
     <div class="ptype-opts" id="ptype-opts"></div>
@@ -618,11 +647,17 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
       <h2 class="res-title" id="res-title">—</h2>
       <div class="res-subtitle" id="res-subtitle">—</div>
     </div>
+    <!-- クリック可能なタイプバッジペア -->
     <div class="type-pair" id="type-pair"></div>
-    <div id="res-type-def" style="margin-top:8px"></div>
+    <!-- タイプ解説カード（バッジクリックで切り替え） -->
+    <div id="res-def-area" style="margin-top:16px"></div>
+    <!-- 組み合わせ結果カード群 -->
     <div class="res-cards" id="res-cards"></div>
     <div class="res-footer">
-      <button class="btn-restart" id="btn-restart">↩ もう一度診断する</button>
+      <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:16px">
+        上のタイプバッジをクリックすると詳細解説が確認できます
+      </p>
+      <button class="btn-restart" id="btn-restart">↩ 診断をやり直す（トップへ戻る）</button>
     </div>
   </div>
 </div>
@@ -1101,58 +1136,60 @@ function showResult() {
     '<em>' + esc(self.name) + '</em><br><span style="font-size:0.55em;color:rgba(255,255,255,0.35)">×</span><br><em class="gold">' + esc(partner.name) + '</em>';
   document.getElementById('res-subtitle').textContent = '「' + d.title + '」';
 
-  // タイプバッジ
+  // タイプバッジ（クリック可能）
   document.getElementById('type-pair').innerHTML =
-    '<div class="type-badge self">' +
+    '<div class="type-badge self clickable-badge" id="badge-self" data-type="' + state.selfType + '" title="クリックで詳細解説を表示">' +
       '<div class="tb-label">あなた</div>' +
       '<div class="tb-emoji">' + self.emoji + '</div>' +
       '<div class="tb-name">' + esc(self.name) + '</div>' +
       '<div class="tb-desc">' + esc(self.short) + '</div>' +
+      '<div class="badge-hint">▼ 詳細</div>' +
     '</div>' +
     '<div class="type-x">×</div>' +
-    '<div class="type-badge partner">' +
+    '<div class="type-badge partner clickable-badge" id="badge-partner" data-type="' + state.partnerType + '" title="クリックで詳細解説を表示">' +
       '<div class="tb-label">パートナー</div>' +
       '<div class="tb-emoji">' + partner.emoji + '</div>' +
       '<div class="tb-name">' + esc(partner.name) + '</div>' +
       '<div class="tb-desc">' + esc(partner.short) + '</div>' +
+      '<div class="badge-hint">▼ 詳細</div>' +
     '</div>';
 
-  // あなたのタイプ詳細解説カード
-  document.getElementById('res-type-def').innerHTML = buildTypeDefCard(state.selfType);
+  // バッジクリックイベント（イベント委譲）
+  var typePairEl = document.getElementById('type-pair');
+  typePairEl.addEventListener('click', function(e) {
+    var badge = e.target.closest('.clickable-badge');
+    if(!badge) return;
+    var typeKey = badge.getAttribute('data-type');
+    switchDefCard(typeKey, badge);
+  });
+
+  // 初期表示：あなたのタイプ解説をデフォルトで展開
+  document.getElementById('res-def-area').innerHTML = buildTypeDefCard(state.selfType, 'self');
+  // 自分バッジをアクティブ状態に
+  setTimeout(function() {
+    var selfBadge = document.getElementById('badge-self');
+    if(selfBadge) selfBadge.classList.add('badge-active');
+  }, 0);
 
   // 結果カード群
   var cards = '';
-
-  // 基本構造
-  cards += resCard('ic-str','🗺️','ct-str','この2人の基本構造',
-    '<p>' + esc(d.structure) + '</p>');
-
-  // すれ違いポイント
+  cards += resCard('ic-str','🗺️','ct-str','この2人の基本構造','<p>' + esc(d.structure) + '</p>');
   var ptHtml = '';
   d.points.forEach(function(p){
     if(p.self) ptHtml += '<p><strong>あなた：</strong>' + esc(p.self) + '</p>';
     if(p.partner) ptHtml += '<p><strong>パートナー：</strong>' + esc(p.partner) + '</p>';
   });
   cards += resCard('ic-pt','⚠️','ct-pt','すれ違いが起きるポイント', ptHtml);
-
-  // 悪循環
-  cards += resCard('ic-cy','🔄','ct-cy','悪循環のループ',
-    '<p>' + esc(d.cycle) + '</p>');
-
-  // 裏の感情
+  cards += resCard('ic-cy','🔄','ct-cy','悪循環のループ','<p>' + esc(d.cycle) + '</p>');
   cards += resCard('ic-fe','💭','ct-fe','お互いの裏の感情',
     '<div class="feelings-grid">' +
       '<div class="fi"><div class="fi-label">あなた（' + state.selfType + '）</div><div class="fi-text">' + esc(d.feelings.self) + '</div></div>' +
       '<div class="fi"><div class="fi-label">パートナー（' + state.partnerType + '）</div><div class="fi-text">' + esc(d.feelings.partner) + '</div></div>' +
     '</div>');
-
-  // 起きやすい問題
   var probHtml = '<ul class="prob-list">';
   d.problems.forEach(function(p){ probHtml += '<li><span class="bul-pr">▶</span><span>' + esc(p) + '</span></li>'; });
   probHtml += '</ul>';
   cards += resCard('ic-pr','🔔','ct-pr','この関係で起きやすい問題', probHtml);
-
-  // 改善アクション
   var actHtml = '<ul class="act-list">';
   d.actions.forEach(function(a, i){
     var bul = i===0 ? 'bul-s' : 'bul-p';
@@ -1160,19 +1197,52 @@ function showResult() {
   });
   actHtml += '</ul>';
   cards += resCard('ic-ac','✅','ct-ac','改善のためのアクション', actHtml);
-
-  // 合言葉
-  cards += resCard('ic-wd','💬','ct-wd','二人の合言葉',
-    '<div class="word-box"><div class="word-text">' + esc(d.word) + '</div></div>');
+  cards += resCard('ic-wd','💬','ct-wd','二人の合言葉','<div class="word-box"><div class="word-text">' + esc(d.word) + '</div></div>');
 
   document.getElementById('res-cards').innerHTML = cards;
   showScreen('screen-result');
 }
 
-function buildTypeDefCard(typeKey) {
+/* バッジクリック時の解説カード切り替え */
+function switchDefCard(typeKey, clickedBadge) {
+  // アクティブ状態の切り替え
+  document.querySelectorAll('.clickable-badge').forEach(function(b){
+    b.classList.remove('badge-active');
+  });
+  clickedBadge.classList.add('badge-active');
+
+  var role = clickedBadge.id === 'badge-self' ? 'self' : 'partner';
+  var defArea = document.getElementById('res-def-area');
+
+  // すでに同じタイプが表示中なら閉じる（トグル）
+  if(defArea.getAttribute('data-current') === typeKey && defArea.style.display !== 'none') {
+    defArea.style.opacity = '0';
+    setTimeout(function(){
+      defArea.innerHTML = '';
+      defArea.setAttribute('data-current', '');
+      defArea.style.opacity = '1';
+      clickedBadge.classList.remove('badge-active');
+    }, 200);
+    return;
+  }
+
+  // フェードアウト → 差し替え → フェードイン
+  defArea.style.transition = 'opacity 0.2s';
+  defArea.style.opacity = '0';
+  setTimeout(function(){
+    defArea.innerHTML = buildTypeDefCard(typeKey, role);
+    defArea.setAttribute('data-current', typeKey);
+    defArea.style.opacity = '1';
+    // スムーズスクロール
+    defArea.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }, 200);
+}
+
+function buildTypeDefCard(typeKey, role) {
   var t = TYPES[typeKey];
   var d = TYPE_DEFS[typeKey];
   if(!d) return '';
+  var roleLabel = (role === 'partner') ? 'パートナーのタイプ詳細' : 'あなたのタイプ詳細';
 
   var actItems = '';
   d.actions.forEach(function(a, i){
@@ -1188,7 +1258,7 @@ function buildTypeDefCard(typeKey) {
     '<div class="tdef-header">' +
       '<div class="tdef-emoji">' + t.emoji + '</div>' +
       '<div class="tdef-header-text">' +
-        '<div class="tdef-type-label">あなたのタイプ詳細</div>' +
+        '<div class="tdef-type-label">' + roleLabel + '</div>' +
         '<div class="tdef-type-name">' + esc(t.name) + '</div>' +
         '<div class="tdef-type-short">' + esc(t.short) + '</div>' +
       '</div>' +
@@ -1318,6 +1388,20 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('ptype-opts').addEventListener('click', function(e) {
     var btn = e.target.closest('[data-ptype]');
     if(btn) selectPartner(btn.getAttribute('data-ptype'));
+  });
+
+  /* ⑦ パートナー選択画面の「あなたのタイプカード」クリックで詳細展開 */
+  var myTypeCardBtn = document.getElementById('my-type-card-btn');
+  if(myTypeCardBtn) myTypeCardBtn.addEventListener('click', function() {
+    var defEl = document.getElementById('ptype-self-def');
+    if(!defEl) return;
+    if(defEl.style.display === 'none' || defEl.style.display === '') {
+      defEl.innerHTML = buildTypeDefCard(state.selfType, 'self');
+      defEl.style.display = 'block';
+      defEl.style.animation = 'slideUp 0.3s ease';
+    } else {
+      defEl.style.display = 'none';
+    }
   });
 });
 </script>
