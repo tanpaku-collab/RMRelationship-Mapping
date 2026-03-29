@@ -312,6 +312,136 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
 @media(max-width:600px){
   .lp-desc br{display:none}
 }
+
+/* ─── タイプ解説カード（結果画面） ─── */
+.tdef-card{
+  background:white;
+  border-radius:20px;
+  padding:36px 32px;
+  box-shadow:0 4px 24px rgba(28,28,46,0.08);
+  margin:0 0 20px;
+  border:1px solid rgba(129,216,208,0.18);
+  position:relative;
+  overflow:hidden;
+}
+.tdef-card::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:4px;
+  background:linear-gradient(90deg,var(--tiffany),var(--tiffany-dark));
+}
+/* タイプ名ヘッダー */
+.tdef-header{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:24px;
+  padding-bottom:20px;
+  border-bottom:1px solid rgba(129,216,208,0.2);
+}
+.tdef-emoji{font-size:36px;line-height:1;flex-shrink:0}
+.tdef-header-text{}
+.tdef-type-label{
+  font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--tiffany-dark);margin-bottom:4px;font-weight:500;
+}
+.tdef-type-name{
+  font-family:var(--serif);font-size:22px;font-weight:600;
+  color:var(--ink);line-height:1.2;margin-bottom:2px;
+}
+.tdef-type-short{font-size:13px;color:var(--text-muted)}
+
+/* 本質キャッチコピー */
+.tdef-catch{
+  background:linear-gradient(135deg,var(--tiffany-pale),rgba(129,216,208,0.05));
+  border-left:3px solid var(--tiffany);
+  border-radius:0 10px 10px 0;
+  padding:14px 18px;
+  font-family:var(--serif);
+  font-size:clamp(15px,3vw,18px);
+  color:var(--ink);
+  font-weight:500;
+  line-height:1.6;
+  margin-bottom:24px;
+}
+
+/* セクション共通 */
+.tdef-section{margin-bottom:20px}
+.tdef-section:last-child{margin-bottom:0}
+.tdef-sec-title{
+  display:flex;align-items:center;gap:8px;
+  font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--tiffany-dark);font-weight:700;
+  margin-bottom:10px;
+}
+.tdef-sec-icon{
+  width:22px;height:22px;border-radius:6px;
+  background:rgba(129,216,208,0.15);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:11px;flex-shrink:0;
+}
+.tdef-text{
+  font-size:14px;color:var(--text);line-height:1.85;
+  overflow-wrap:anywhere;word-break:keep-all;
+}
+.tdef-text+.tdef-text{margin-top:8px}
+
+/* 2カラムグリッド（すれ違い・誤解） */
+.tdef-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+.tdef-grid-item{
+  background:var(--beige);border-radius:10px;
+  padding:12px 14px;
+}
+.tdef-grid-label{
+  font-size:10px;letter-spacing:0.12em;color:var(--text-muted);
+  text-transform:uppercase;margin-bottom:6px;font-weight:500;
+}
+.tdef-grid-text{font-size:13px;color:var(--text);line-height:1.75;overflow-wrap:anywhere}
+
+/* アクションリスト */
+.tdef-action-list{list-style:none;margin-top:6px}
+.tdef-action-list li{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:8px 0;
+  font-size:14px;color:var(--text);line-height:1.7;
+  border-bottom:1px solid rgba(129,216,208,0.12);
+  overflow-wrap:anywhere;
+}
+.tdef-action-list li:last-child{border-bottom:none}
+.tdef-bullet{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--tiffany);color:white;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;
+}
+
+/* 魅力バッジ */
+.tdef-charm{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,rgba(201,169,110,0.12),rgba(201,169,110,0.04));
+  border:1px solid rgba(201,169,110,0.3);
+  border-radius:40px;
+  padding:8px 18px;
+  font-family:var(--serif);
+  font-size:14px;color:var(--gold);
+  font-weight:500;
+  margin-top:6px;
+}
+
+/* セクション区切り線 */
+.tdef-divider{
+  height:1px;background:rgba(129,216,208,0.15);
+  margin:20px 0;
+}
+
+/* スマホ対応 */
+@media(max-width:600px){
+  .tdef-card{padding:24px 18px}
+  .tdef-grid{grid-template-columns:1fr}
+  .tdef-type-name{font-size:18px}
+  .tdef-catch{font-size:15px;padding:12px 14px}
+  .tdef-text{font-size:13px}
+  .tdef-action-list li{font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -489,6 +619,7 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
       <div class="res-subtitle" id="res-subtitle">—</div>
     </div>
     <div class="type-pair" id="type-pair"></div>
+    <div id="res-type-def" style="margin-top:8px"></div>
     <div class="res-cards" id="res-cards"></div>
     <div class="res-footer">
       <button class="btn-restart" id="btn-restart">↩ もう一度診断する</button>
@@ -507,6 +638,70 @@ var TYPES = {
   D:{name:"主導・管理タイプ",short:"正しさを守ろうとする人",emoji:"⚡"},
   E:{name:"距離・自由タイプ",short:"一人で整える人",emoji:"🛡"},
   F:{name:"意味・本質タイプ",short:"深く理解したい人",emoji:"🔭"}
+};
+
+/* ── タイプ別詳細定義 ── */
+var TYPE_DEFS = {
+  A:{
+    catch:"「つながり」を何より大切にする人",
+    slip:"相手の不機嫌を「私のせい？」と受け取る。表情・声色・沈黙に心が大きく揺れる。我慢の末に感情が爆発。",
+    inner:"怖い、ひとりにしないで、見捨てられたくない、安心したい。",
+    misread_by:"情緒不安定、依存的、感情をぶつけてコントロールしようとしている、と思われがち。",
+    misread_other:"黙る＝怒っている、説明が長い＝責めている、距離を取る＝嫌われた、と変換しやすい。",
+    approach:"まず「ここにいるよ」「大丈夫だよ」と存在を認める言葉をかける。正論の前に共感を示す。",
+    actions:["気持ちは一行で伝える","相手の感情を背負わない","感情が溢れたら3分待つ"],
+    charm:"共感力・安心感・家庭の温度を作る力。"
+  },
+  B:{
+    catch:"「理解」と「納得」が安心の人",
+    slip:"考えて黙ると「冷たい」と誤解される。理由を話すほど相手が感情的になる。結論が出ない会話に消耗。",
+    inner:"間違えたくない、正しく理解したい、安心したい、混乱が怖い。",
+    misread_by:"冷淡、理屈っぽい、逃げている、自分の正しさを押し通そうとしている、と思われがち。",
+    misread_other:"感情的＝非論理的で価値がない、泣く＝自分を責めて屈服させようとしている、と考えがち。",
+    approach:"結論→理由→感情の順で話す。沈黙を「思考の時間」として尊重し、急かさない。",
+    actions:["解決策を出す前に「大変だったね」と一言添える","自分の「今の気持ち」を単語で伝える"],
+    charm:"誠実・分析力・問題解決力。"
+  },
+  C:{
+    catch:"「相手優先」が癖の人",
+    slip:"我慢しすぎて限界で爆発。頼れず一人で疲弊。笑顔の裏で本音を押し殺し、結果として壁を作る。",
+    inner:"助けてほしい、一緒にいてほしい、認めてほしい、役に立ちたい。",
+    misread_by:"言わない＝平気、できている＝余裕、何でも受け入れてくれる、と思われがち。",
+    misread_other:"頼まれない＝自分は不要、相手が自由に振る舞う＝自分を軽視している、と捉えがち。",
+    approach:"「いつもありがとう」と具体的に感謝を伝える。本音を言えるよう、小さな選択肢を提示する。",
+    actions:["本音をひとこと伝える","期待を先に伝える","小さなことから「頼る」練習をする"],
+    charm:"献身性・安定感・包容力。"
+  },
+  D:{
+    catch:"「正しさ」を守ろうとする人",
+    slip:"正論がきつく反発される。改善の提案がコントロールと誤解される。弱音を吐けず孤立する。",
+    inner:"不安、失敗への怖れ、なめられたくない、守らなければという重圧。",
+    misread_by:"支配的、威圧的、自分勝手、攻撃的、と見られがち。",
+    misread_other:"感情＝甘え、弱さ＝怠慢、できない＝やる気がない、と厳しく捉えてしまう。",
+    approach:"責任感や決断力を肯定する。要望は「助けてほしい」という形で具体的に伝える。",
+    actions:["完璧を手放す","事実と評価を分ける","正論の前に相手の体調や気分を確認する"],
+    charm:"決断力・責任感・行動力。"
+  },
+  E:{
+    catch:"「一人で整える」人",
+    slip:"距離＝拒絶と誤解される。詰められると心のシャッターを下ろす。長時間密着すると消耗する。",
+    inner:"侵入される不安、圧への恐怖、自分を保ちたい、安全でありたい。",
+    misread_by:"無関心、愛情が薄い、冷酷、何を考えているか不明、と思われがち。",
+    misread_other:"近づかれる＝自由を奪われる、話し合い＝攻撃や束縛、と身構えてしまう。",
+    approach:"「10分だけ」と時間を区切って話す。物理的なパーソナルスペースを尊重する。",
+    actions:["「今は一人になりたいだけ」と言語化する","後で話す時間を自分から提案する"],
+    charm:"冷静さ・柔軟性・自立心。"
+  },
+  F:{
+    catch:"「深く理解したい」人",
+    slip:"話が抽象的で難しい。重箱の隅を突くような深掘り。日常の些細な楽しさより意味を優先。",
+    inner:"理解されたい、本質を共有したい、表面的な関係への虚しさ。",
+    misread_by:"批判的、理屈っぽい、説教臭い、理想が高すぎる、と見られがち。",
+    misread_other:"日常会話＝無意味・無駄、理解できない相手＝精神的に未熟、と決めつけてしまう。",
+    approach:"「なぜそう思うの？」と背景を聞く。彼らの持つ独自の価値観や視点に敬意を払う。",
+    actions:["感情から話し始める","理論を日常の具体的なアクションに落とし込む"],
+    charm:"洞察力・深い絆・精神的成熟。"
+  }
 };
 
 var QUESTIONS = [
@@ -922,6 +1117,9 @@ function showResult() {
       '<div class="tb-desc">' + esc(partner.short) + '</div>' +
     '</div>';
 
+  // あなたのタイプ詳細解説カード
+  document.getElementById('res-type-def').innerHTML = buildTypeDefCard(state.selfType);
+
   // 結果カード群
   var cards = '';
 
@@ -969,6 +1167,93 @@ function showResult() {
 
   document.getElementById('res-cards').innerHTML = cards;
   showScreen('screen-result');
+}
+
+function buildTypeDefCard(typeKey) {
+  var t = TYPES[typeKey];
+  var d = TYPE_DEFS[typeKey];
+  if(!d) return '';
+
+  var actItems = '';
+  d.actions.forEach(function(a, i){
+    actItems += '<li>' +
+      '<span class="tdef-bullet">' + (i+1) + '</span>' +
+      '<span>' + esc(a) + '</span>' +
+    '</li>';
+  });
+
+  return '<div class="tdef-card">' +
+
+    /* ヘッダー */
+    '<div class="tdef-header">' +
+      '<div class="tdef-emoji">' + t.emoji + '</div>' +
+      '<div class="tdef-header-text">' +
+        '<div class="tdef-type-label">あなたのタイプ詳細</div>' +
+        '<div class="tdef-type-name">' + esc(t.name) + '</div>' +
+        '<div class="tdef-type-short">' + esc(t.short) + '</div>' +
+      '</div>' +
+    '</div>' +
+
+    /* 本質キャッチコピー */
+    '<div class="tdef-catch">' + esc(d.catch) + '</div>' +
+
+    /* すれ違いポイント・裏の感情 */
+    '<div class="tdef-section">' +
+      '<div class="tdef-sec-title"><span class="tdef-sec-icon">⚡</span>すれ違いポイント ／ 裏の感情</div>' +
+      '<div class="tdef-grid">' +
+        '<div class="tdef-grid-item">' +
+          '<div class="tdef-grid-label">すれ違いが起きやすい場面</div>' +
+          '<div class="tdef-grid-text">' + esc(d.slip) + '</div>' +
+        '</div>' +
+        '<div class="tdef-grid-item">' +
+          '<div class="tdef-grid-label">あなたの裏の感情</div>' +
+          '<div class="tdef-grid-text">' + esc(d.inner) + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="tdef-divider"></div>' +
+
+    /* 誤解 */
+    '<div class="tdef-section">' +
+      '<div class="tdef-sec-title"><span class="tdef-sec-icon">👁</span>誤解のすれ違い</div>' +
+      '<div class="tdef-grid">' +
+        '<div class="tdef-grid-item">' +
+          '<div class="tdef-grid-label">周囲から誤解されやすいこと</div>' +
+          '<div class="tdef-grid-text">' + esc(d.misread_by) + '</div>' +
+        '</div>' +
+        '<div class="tdef-grid-item">' +
+          '<div class="tdef-grid-label">あなたが誤解しがちなこと</div>' +
+          '<div class="tdef-grid-text">' + esc(d.misread_other) + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="tdef-divider"></div>' +
+
+    /* 有効なアプローチ */
+    '<div class="tdef-section">' +
+      '<div class="tdef-sec-title"><span class="tdef-sec-icon">💬</span>あなたへの有効なアプローチ（周囲へのヒント）</div>' +
+      '<div class="tdef-text">' + esc(d.approach) + '</div>' +
+    '</div>' +
+
+    '<div class="tdef-divider"></div>' +
+
+    /* 改善アクション */
+    '<div class="tdef-section">' +
+      '<div class="tdef-sec-title"><span class="tdef-sec-icon">✅</span>今すぐできる改善アクション</div>' +
+      '<ul class="tdef-action-list">' + actItems + '</ul>' +
+    '</div>' +
+
+    '<div class="tdef-divider"></div>' +
+
+    /* 最大の魅力 */
+    '<div class="tdef-section">' +
+      '<div class="tdef-sec-title"><span class="tdef-sec-icon">✨</span>あなたの最大の魅力</div>' +
+      '<div class="tdef-charm">🌟 ' + esc(d.charm) + '</div>' +
+    '</div>' +
+
+  '</div>';
 }
 
 function resCard(iconCls, iconEmoji, titleCls, title, bodyHtml) {
