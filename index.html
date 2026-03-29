@@ -227,6 +227,34 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
   .feelings-grid{grid-template-columns:1fr}
   .floating-btn{bottom:16px}
 }
+
+/* ─── 画像プレースホルダー ─── */
+.hero-img-wrap{margin-top:40px;padding:0 24px}
+.hero-img{width:100%;max-width:680px;border-radius:16px;opacity:0.7;display:block;margin:0 auto;object-fit:cover}
+.lp-img-row{text-align:center;padding:0 24px}
+.lp-img-wide{width:100%;max-width:900px;border-radius:12px;display:block;margin:0 auto 32px;object-fit:cover}
+.lp-img-cta{width:100%;max-width:520px;border-radius:12px;display:block;margin:0 auto;object-fit:cover}
+
+/* ─── 解析中アニメーション ─── */
+.analyzing-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 24px}
+.analyzing-inner{text-align:center;max-width:400px;margin:0 auto}
+.analyzing-rings{position:relative;width:120px;height:120px;margin:0 auto 32px}
+.ring{position:absolute;border-radius:50%;border:2px solid transparent}
+.ring.r1{inset:0;border-top-color:var(--tiffany);animation:spin 1.2s linear infinite}
+.ring.r2{inset:12px;border-top-color:var(--gold);animation:spin 1.8s linear infinite reverse}
+.ring.r3{inset:24px;border-top-color:rgba(129,216,208,0.4);animation:spin 2.4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ring-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:32px}
+.analyzing-title{font-family:var(--serif);font-size:28px;color:var(--ink);font-weight:400;margin-bottom:12px}
+.dots span{animation:dotBlink 1.4s infinite;opacity:0}
+.dots span:nth-child(1){animation-delay:0s}
+.dots span:nth-child(2){animation-delay:0.2s}
+.dots span:nth-child(3){animation-delay:0.4s}
+@keyframes dotBlink{0%,80%,100%{opacity:0}40%{opacity:1}}
+.analyzing-sub{font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:32px}
+.analyzing-bar-wrap{height:4px;background:rgba(129,216,208,0.2);border-radius:4px;overflow:hidden;margin-bottom:16px}
+.analyzing-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--tiffany),var(--tiffany-dark));border-radius:4px;transition:width 0.3s ease}
+.analyzing-labels{font-size:12px;color:var(--text-muted);font-style:italic;font-family:var(--serif)}
 </style>
 </head>
 <body>
@@ -243,13 +271,20 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
     その原因を<strong>「心の反応パターン（構造）」として可視化</strong>する診断です。</p>
     <p class="lp-desc" style="margin-top:-12px;font-size:14px">
     この診断を通じて、自分と相手の心の動きを理解し、<br>より良い関係性を築くための第一歩を踏み出しましょう。</p>
-    <button class="btn-start" onclick="startQuiz()">診断をはじめる <span class="btn-arrow">→</span></button>
+    <!-- ヒーロー画像プレースホルダー -->
+    <div class="hero-img-wrap">
+      <img src="https://placehold.jp/30/1C1C2E/81D8D0/680x280.png?text=RM+Diagnosis+%E2%80%94+Relationship+Mapping" alt="RM診断イメージ" class="hero-img">
+    </div>
   </div>
 
   <div class="lp-cards">
     <div class="sec-label">What you'll discover</div>
     <h2 class="sec-title">RM診断チェックでわかること</h2>
     <p class="sec-desc">ご自身の心の状態を客観的に見つめ直し、より深く理解するための「心の反応タイプ」を特定します。</p>
+    <!-- ステップ説明画像 -->
+    <div class="lp-img-row">
+      <img src="https://placehold.jp/20/e8f9f8/5bbdb4/900x200.png?text=Step+1+%E2%80%94+Step+2+%E2%80%94+Step+3" alt="3ステップ説明" class="lp-img-wide">
+    </div>
     <div class="cards-grid">
       <div class="feat-card">
         <div class="feat-num">01</div>
@@ -271,6 +306,10 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
 
   <div class="lp-problem">
     <h2 class="prob-title">夫婦・パートナー問題の正体は<br><em>「真逆の反応パターン」</em>が噛み合っていないだけ</h2>
+    <!-- 問題提起画像 -->
+    <div class="lp-img-row" style="margin-bottom:32px">
+      <img src="https://placehold.jp/30/1a2744/C9A96E/720x160.png?text=%E5%A4%AB%E5%A9%A6%E3%83%BB%E3%83%91%E3%83%BC%E3%83%88%E3%83%8A%E3%83%BC%E5%95%8F%E9%A1%8C%E3%81%AE%E6%AD%A3%E4%BD%93" alt="夫婦問題の正体" class="lp-img-wide" style="border-radius:12px;opacity:0.8">
+    </div>
     <div class="pat-grid">
       <div class="pat-col">
         <div class="pat-col-title">パートナーAタイプ</div>
@@ -296,6 +335,10 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
   <div class="cta-sec">
     <div class="sec-label">Personalized insight</div>
     <h2 class="sec-title" style="margin-bottom:28px">すべて「あなた専用」に<br>整理してお伝えします</h2>
+    <!-- CTAイメージ -->
+    <div class="lp-img-row" style="margin-bottom:28px">
+      <img src="https://placehold.jp/10/F9F8F7/81D8D0/520x140.png?text=%E3%81%82%E3%81%AA%E3%81%9F%E5%B0%82%E7%94%A8%E3%81%AE%E7%B5%90%E6%9E%9C%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8" alt="診断結果イメージ" class="lp-img-cta">
+    </div>
     <div class="check-item">
       <div class="check-icon">✓</div>
       <div>
@@ -310,8 +353,7 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
         <div class="check-sub">やってはいけないNG行動 ／ 関係が温まる"たった一歩"</div>
       </div>
     </div>
-    <button class="btn-start" onclick="startQuiz()" style="margin-top:8px">無料で診断をはじめる <span class="btn-arrow">→</span></button>
-    <p style="margin-top:16px;font-size:12px;color:var(--text-muted)">所要時間 約3〜5分 · 最大12問（早期終了あり）</p>
+    <p style="margin-top:20px;font-size:12px;color:var(--text-muted)">所要時間 約3〜5分 · 最大12問（早期終了あり）<br>↓ 下の固定ボタンから診断を開始できます</p>
   </div>
 
   <div class="floating-btn">
@@ -334,6 +376,28 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
     <div class="quiz-nav">
       <button class="btn-back" id="btn-back" onclick="goBack()" disabled>← 戻る</button>
       <button class="btn-next" id="btn-next" onclick="goNext()" disabled>次へ →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 解析中画面 ══════════ -->
+<div id="screen-analyzing" class="screen quiz-screen">
+  <div class="analyzing-wrap">
+    <div class="analyzing-inner">
+      <div class="analyzing-rings">
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
+        <div class="ring-center">🧭</div>
+      </div>
+      <div class="analyzing-title">解析中<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+      <div class="analyzing-sub">あなたの心の反応パターンを<br>マッピングしています</div>
+      <div class="analyzing-bar-wrap">
+        <div class="analyzing-bar" id="analyzing-bar"></div>
+      </div>
+      <div class="analyzing-labels">
+        <span id="analyzing-label">回答データを読み込み中</span>
+      </div>
     </div>
   </div>
 </div>
@@ -588,6 +652,9 @@ function showScreen(id) {
 ════════════════════════════════════ */
 function startQuiz() {
   initState();
+  // フローティングボタンをLP中のみ表示するため非表示に
+  var fb = document.querySelector('.floating-btn');
+  if(fb) fb.style.display = 'none';
   showScreen('screen-quiz');
   renderQuestion();
 }
@@ -680,8 +747,7 @@ function goNext() {
 
   // 早期終了チェック（5問以降）
   if(shouldFinishEarly(sc, qi+1)){
-    state.selfType = getBestType(sc);
-    showPartnerSelect();
+    startAnalyzing(getBestType(sc));
     return;
   }
 
@@ -691,9 +757,45 @@ function goNext() {
   } else {
     // 全問完了
     var finalSc = calcScores(QUESTIONS.length - 1);
-    state.selfType = getBestType(finalSc);
-    showPartnerSelect();
+    startAnalyzing(getBestType(finalSc));
   }
+}
+
+/* ════════════════════════════════════
+   解析中アニメーション → パートナー選択
+════════════════════════════════════ */
+function startAnalyzing(selfType) {
+  state.selfType = selfType;
+  showScreen('screen-analyzing');
+
+  var bar = document.getElementById('analyzing-bar');
+  var label = document.getElementById('analyzing-label');
+  var labels = [
+    '回答データを読み込み中',
+    '心の反応パターンを分析中',
+    'タイプを照合中',
+    'あなた専用のマップを生成中',
+    '解析完了'
+  ];
+  var steps = [0, 20, 45, 70, 90, 100];
+  var li = 0;
+
+  // ラベルとバーを段階的に更新
+  function step(i) {
+    if(i >= steps.length) return;
+    bar.style.width = steps[i] + '%';
+    if(labels[i]) label.textContent = labels[i];
+    var delay = i === steps.length - 1 ? 600 : 500 + Math.random() * 300;
+    if(i < steps.length - 1) setTimeout(function(){ step(i+1); }, delay);
+  }
+  step(0);
+
+  // 3秒後にパートナー選択へ
+  setTimeout(function(){
+    bar.style.width = '100%';
+    label.textContent = '解析完了';
+    setTimeout(function(){ showPartnerSelect(); }, 400);
+  }, 3000);
 }
 
 /* ════════════════════════════════════
@@ -827,6 +929,8 @@ function resCard(iconCls, iconEmoji, titleCls, title, bodyHtml) {
 ════════════════════════════════════ */
 function restart() {
   initState();
+  var fb = document.querySelector('.floating-btn');
+  if(fb) fb.style.display = '';
   showScreen('screen-lp');
 }
 
