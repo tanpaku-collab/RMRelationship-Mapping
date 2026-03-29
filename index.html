@@ -519,7 +519,7 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
   </div>
 
   <div class="lp-problem">
-    <h2 class="prob-title">夫婦・パートナー問題の正体は<br><em>「真逆の反応パターン」</em>が噛み合っていないだけ</h2>
+    <h2 class="prob-title">夫婦・パートナー問題の正体は<span style="display:block"><em>「真逆の反応パターン」</em></span><span style="display:block">が噛み合っていないだけ</span></h2>
     <!-- 問題提起画像 -->
     <div class="lp-img-row" style="margin-bottom:32px">
       <img src="https://placehold.jp/30/1a2744/C9A96E/720x160.png?text=%E5%A4%AB%E5%A9%A6%E3%83%BB%E3%83%91%E3%83%BC%E3%83%88%E3%83%8A%E3%83%BC%E5%95%8F%E9%A1%8C%E3%81%AE%E6%AD%A3%E4%BD%93" alt="夫婦問題の正体" class="lp-img-wide" style="border-radius:12px;opacity:0.8">
@@ -1163,13 +1163,11 @@ function showResult() {
     switchDefCard(typeKey, badge);
   });
 
-  // 初期表示：あなたのタイプ解説をデフォルトで展開
-  document.getElementById('res-def-area').innerHTML = buildTypeDefCard(state.selfType, 'self');
-  // 自分バッジをアクティブ状態に
-  setTimeout(function() {
-    var selfBadge = document.getElementById('badge-self');
-    if(selfBadge) selfBadge.classList.add('badge-active');
-  }, 0);
+  // 初期表示：解説カードは非表示（バッジクリックで展開）
+  var defArea = document.getElementById('res-def-area');
+  defArea.innerHTML = '';
+  defArea.setAttribute('data-current', '');
+  defArea.style.opacity = '1';
 
   // 結果カード群
   var cards = '';
@@ -1203,39 +1201,67 @@ function showResult() {
   showScreen('screen-result');
 }
 
-/* バッジクリック時の解説カード切り替え */
+/* バッジクリック時の解説カード切り替え（アコーディオン型） */
 function switchDefCard(typeKey, clickedBadge) {
-  // アクティブ状態の切り替え
+  var role = clickedBadge.id === 'badge-self' ? 'self' : 'partner';
+  var defArea = document.getElementById('res-def-area');
+  var isSame = defArea.getAttribute('data-current') === typeKey;
+
+  // ── 同じバッジを再クリック → 閉じる（トグル）──
+  if(isSame) {
+    // バッジのアクティブ解除
+    clickedBadge.classList.remove('badge-active');
+    // アコーディオン閉じアニメ
+    defArea.style.transition = 'opacity 0.18s, max-height 0.3s ease';
+    defArea.style.opacity = '0';
+    defArea.style.maxHeight = '0';
+    defArea.style.overflow = 'hidden';
+    setTimeout(function(){
+      defArea.innerHTML = '';
+      defArea.setAttribute('data-current', '');
+      defArea.style.maxHeight = '';
+      defArea.style.overflow = '';
+      defArea.style.opacity = '1';
+    }, 300);
+    return;
+  }
+
+  // ── 別バッジ or 初回クリック → 差し替えて展開 ──
+  // 全バッジのアクティブ解除
   document.querySelectorAll('.clickable-badge').forEach(function(b){
     b.classList.remove('badge-active');
   });
   clickedBadge.classList.add('badge-active');
 
-  var role = clickedBadge.id === 'badge-self' ? 'self' : 'partner';
-  var defArea = document.getElementById('res-def-area');
-
-  // すでに同じタイプが表示中なら閉じる（トグル）
-  if(defArea.getAttribute('data-current') === typeKey && defArea.style.display !== 'none') {
-    defArea.style.opacity = '0';
-    setTimeout(function(){
-      defArea.innerHTML = '';
-      defArea.setAttribute('data-current', '');
-      defArea.style.opacity = '1';
-      clickedBadge.classList.remove('badge-active');
-    }, 200);
-    return;
-  }
-
-  // フェードアウト → 差し替え → フェードイン
-  defArea.style.transition = 'opacity 0.2s';
-  defArea.style.opacity = '0';
-  setTimeout(function(){
+  // 開閉アニメ：一瞬閉じてから新カード表示
+  var doExpand = function() {
     defArea.innerHTML = buildTypeDefCard(typeKey, role);
     defArea.setAttribute('data-current', typeKey);
-    defArea.style.opacity = '1';
-    // スムーズスクロール
-    defArea.scrollIntoView({behavior:'smooth', block:'nearest'});
-  }, 200);
+    defArea.style.opacity = '0';
+    defArea.style.maxHeight = '0';
+    defArea.style.overflow = 'hidden';
+    defArea.style.transition = 'opacity 0.25s, max-height 0.35s ease';
+    // 少し遅らせてDOMを確定させてからアニメ開始
+    setTimeout(function(){
+      defArea.style.opacity = '1';
+      defArea.style.maxHeight = '3000px'; // 十分大きな値
+      // アニメ完了後にoverflowをvisibleに戻す
+      setTimeout(function(){
+        defArea.style.overflow = 'visible';
+        // スクロール：展開したカードの先頭が見えるように
+        defArea.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 350);
+    }, 20);
+  };
+
+  if(defArea.innerHTML !== '') {
+    // 既存カードをフェードアウトしてから差し替え
+    defArea.style.transition = 'opacity 0.15s';
+    defArea.style.opacity = '0';
+    setTimeout(doExpand, 150);
+  } else {
+    doExpand();
+  }
 }
 
 function buildTypeDefCard(typeKey, role) {
