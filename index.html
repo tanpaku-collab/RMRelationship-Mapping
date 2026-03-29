@@ -1109,6 +1109,14 @@ function showPartnerSelect() {
   document.getElementById('btn-ptype-next').disabled = true;
 
   showScreen('screen-ptype');
+
+  /* yu11: 解説カードを初期状態で展開済みにする */
+  var defEl = document.getElementById('ptype-self-def');
+  if(defEl) {
+    defEl.innerHTML = buildTypeDefCard(state.selfType, 'self');
+    defEl.style.display = 'block';
+    defEl.style.animation = 'slideUp 0.35s ease';
+  }
 }
 
 function selectPartner(k) {
@@ -1416,17 +1424,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if(btn) selectPartner(btn.getAttribute('data-ptype'));
   });
 
-  /* ⑦ パートナー選択画面の「あなたのタイプカード」クリックで詳細展開 */
+  /* ⑦ パートナー選択画面の「あなたのタイプカード」クリックでトグル */
   var myTypeCardBtn = document.getElementById('my-type-card-btn');
   if(myTypeCardBtn) myTypeCardBtn.addEventListener('click', function() {
     var defEl = document.getElementById('ptype-self-def');
     if(!defEl) return;
-    if(defEl.style.display === 'none' || defEl.style.display === '') {
+    if(defEl.style.display === 'block') {
+      /* 開いている → 閉じる */
+      defEl.style.display = 'none';
+    } else {
+      /* 閉じている → 開く */
       defEl.innerHTML = buildTypeDefCard(state.selfType, 'self');
       defEl.style.display = 'block';
       defEl.style.animation = 'slideUp 0.3s ease';
-    } else {
-      defEl.style.display = 'none';
     }
   });
 });
