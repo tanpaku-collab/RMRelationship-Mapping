@@ -207,10 +207,10 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
 .card-body p+p{margin-top:12px}
 .card-body strong{color:var(--ink);font-weight:600}
 
-.feelings-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
-.fi{background:var(--beige);border-radius:10px;padding:12px 14px;border:1px solid var(--beige-mid)}
+.feelings-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;width:100%;box-sizing:border-box}
+.fi{background:var(--beige);border-radius:10px;padding:12px 14px;border:1px solid var(--beige-mid);box-sizing:border-box;min-width:0;overflow:hidden}
 .fi-label{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
-.fi-text{font-size:13px;color:var(--text);line-height:1.7}
+.fi-text{font-size:13px;color:var(--text);line-height:1.7;word-break:keep-all;overflow-wrap:break-word}
 
 .prob-list,.act-list{list-style:none;margin-top:8px}
 .prob-list li,.act-list li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;font-size:14px;color:var(--text);border-bottom:1px solid var(--beige-mid);word-break:keep-all;overflow-wrap:break-word}
@@ -528,7 +528,7 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
     <div class="deco-line"><div class="deco-diamond"></div></div>
     <p class="lp-desc">RM診断は、<strong>性格の良し悪しを決めるものではありません。</strong><br>
     なぜ分かり合えないのか、<br class="sm-only">なぜ同じことで何度もぶつかるのか——<br>
-    その原因を<strong>「心の反応パターン（構造）」として<br class="sm-only">可視化</strong>する診断です。</p>
+    その原因を<strong>「心の反応パターン（構造）」<br class="sm-only">として可視化</strong>する診断です。</p>
     <p class="lp-desc" style="margin-top:-12px;font-size:14px">
     この診断を通じて、<br class="sm-only">自分と相手の心の動きを理解し、<br>より良い関係性を築くための第一歩を踏み出しましょう。</p>
     <!-- ヒーロー画像プレースホルダー -->
