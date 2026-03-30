@@ -118,6 +118,7 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
 .q-num{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--tiffany-dark);margin-bottom:16px;letter-spacing:0.1em}
 .q-text{font-size:clamp(15px,2.5vw,18px);font-weight:500;color:var(--ink);line-height:1.7;margin-bottom:20px;font-family:'Noto Serif JP',serif}
 .rank-hint{font-size:12px;color:var(--text-muted);margin-bottom:16px;padding:10px 14px;background:rgba(52,199,169,0.08);border-radius:8px;border-left:3px solid var(--tiffany)}
+.rank-hint-done{background:rgba(52,199,169,0.15);border-left-color:var(--tiffany-dark);color:var(--tiffany-dark);font-weight:500}
 .opts{display:flex;flex-direction:column;gap:8px}
 .opt-btn{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--beige);border:1.5px solid var(--beige-mid);border-radius:var(--radius-sm);cursor:pointer;font-family:var(--sans);font-size:14px;color:var(--text);text-align:left;transition:all 0.2s;width:100%;position:relative;overflow:hidden}
 .opt-btn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--tiffany);transform:scaleY(0);transition:transform 0.2s}
@@ -892,14 +893,14 @@ var DB = {
 ════════════════════════════════════ */
 var state = {
   currentQ: 0,
-  rankings: [], // 各問：[1位ラベル|null, 2位ラベル|null, 3位ラベル|null]
+  rankings: [], // 各問：[1位ラベル|null, 2位ラベル|null]（最大2択）
   selfType: null,
   partnerType: null
 };
 
 function initState() {
   state.currentQ = 0;
-  state.rankings = QUESTIONS.map(function(){ return [null,null,null]; });
+  state.rankings = QUESTIONS.map(function(){ return [null, null]; });
   state.selfType = null;
   state.partnerType = null;
 }
@@ -911,9 +912,16 @@ function calcScores(upTo) {
   var sc = {A:0,B:0,C:0,D:0,E:0,F:0};
   for(var i=0; i<=upTo && i<state.rankings.length; i++){
     var r = state.rankings[i];
-    if(r[0]) sc[r[0]] += 3;
-    if(r[1]) sc[r[1]] += 2;
-    if(r[2]) sc[r[2]] += 1;
+    var first  = r[0]; // 1位
+    var second = r[1]; // 2位
+    if(first && second) {
+      // 2つ選択：1位=3点、2位=2点
+      sc[first]  += 3;
+      sc[second] += 2;
+    } else if(first) {
+      // 1つのみ選択：4点
+      sc[first] += 4;
+    }
   }
   return sc;
 }
@@ -969,31 +977,41 @@ function renderQuestion() {
   document.getElementById('prog-fill').style.width = pct + '%';
   document.getElementById('quiz-count').textContent = 'Q' + (qi+1) + ' / ' + QUESTIONS.length;
 
-  // 早期終了通知
+  // 早期終了通知（5問以降かつ差が4以上で予告）
   var sc = calcScores(qi);
   var top = getTopTwo(sc);
   var diff = top[0].v - top[1].v;
   var earlyNote = document.getElementById('early-note');
   earlyNote.style.display = (qi >= 4 && diff >= 4) ? 'block' : 'none';
 
+  // 選択状態
+  var selectedCount = ranks.filter(function(x){ return x!==null; }).length;
+  var isFull = (selectedCount === 2); // 2つ選択済み
+
   // カード生成
   var wrap = document.getElementById('q-card-wrap');
   var html = '<div class="q-card">';
   html += '<div class="q-num">Question ' + (qi+1) + '</div>';
   html += '<div class="q-text">' + esc(q.text) + '</div>';
-  html += '<div class="rank-hint">当てはまるものを<strong>最大3つ</strong>、優先順位をつけて選んでください（1位が最も当てはまる）</div>';
-  html += '<div class="opts">';
+  // ヒント：選択数に応じて変化
+  if(isFull){
+    html += '<div class="rank-hint rank-hint-done">✅ 2つ選択済み。次の設問へ進みます…</div>';
+  } else if(selectedCount === 1){
+    html += '<div class="rank-hint">もう1つ選ぶか、このまま<strong>「次へ」</strong>で進めます</div>';
+  } else {
+    html += '<div class="rank-hint">最もあてはまるものを<strong>1〜2つ</strong>選んでください（2つ選ぶと自動で次へ）</div>';
+  }
+  html += '<div class="opts" style="' + (isFull ? 'pointer-events:none;opacity:0.7' : '') + '">';
 
   for(var oi=0; oi<q.opts.length; oi++){
     var opt = q.opts[oi];
-    var rankIdx = ranks.indexOf(opt.l); // -1 or 0,1,2
-    var rankNum = rankIdx + 1; // 0 or 1,2,3
+    var rankIdx = ranks.indexOf(opt.l); // -1 or 0,1
+    var rankNum = rankIdx + 1;          // 0 or 1,2
     var btnCls = 'opt-btn';
     var badgeCls = 'rank-badge';
     var badgeText = opt.l;
-    if(rankNum === 1){ btnCls+=' rank1'; badgeCls+=' r1'; badgeText='1位'; }
-    else if(rankNum === 2){ btnCls+=' rank2'; badgeCls+=' r2'; badgeText='2位'; }
-    else if(rankNum === 3){ btnCls+=' rank3'; badgeCls+=' r3'; badgeText='3位'; }
+    if(rankNum === 1){ btnCls+=' rank1'; badgeCls+=' r1'; badgeText='①'; }
+    else if(rankNum === 2){ btnCls+=' rank2'; badgeCls+=' r2'; badgeText='②'; }
     html += '<button class="' + btnCls + '" data-label="' + opt.l + '">';
     html += '<span class="' + badgeCls + '">' + badgeText + '</span>';
     html += '<span class="opt-text">' + esc(opt.t) + '</span>';
@@ -1002,7 +1020,7 @@ function renderQuestion() {
   html += '</div></div>';
   wrap.innerHTML = html;
 
-  // ナビボタン
+  // ナビボタン：1つ以上選んでいれば「次へ」有効
   var hasRank1 = ranks[0] !== null;
   document.getElementById('btn-back').disabled = (qi === 0);
   document.getElementById('btn-next').disabled = !hasRank1;
@@ -1012,21 +1030,31 @@ function renderQuestion() {
 
 function toggleRank(label) {
   var qi = state.currentQ;
-  var r = state.rankings[qi].slice(); // コピー
+  var r = state.rankings[qi].slice();
   var existIdx = r.indexOf(label);
+
   if(existIdx !== -1){
-    // 解除して詰める
+    // 選択済み → 解除して詰める
     r[existIdx] = null;
     var filled = r.filter(function(x){ return x!==null; });
-    state.rankings[qi] = [filled[0]||null, filled[1]||null, filled[2]||null];
+    state.rankings[qi] = [filled[0]||null, filled[1]||null];
+    renderQuestion();
   } else {
-    // 空きに追加
+    // 未選択 → 空きスロットへ追加（最大2つ）
     var emptyIdx = r.indexOf(null);
-    if(emptyIdx === -1) return; // 3つ選択済み
+    if(emptyIdx === -1) return; // 2つ選択済みなら無視
     r[emptyIdx] = label;
     state.rankings[qi] = r;
+    renderQuestion();
+
+    // 2つ選んだ瞬間に0.5秒後自動進行
+    if(r[0] !== null && r[1] !== null) {
+      setTimeout(function(){
+        // まだ同じ問に居て、選択が維持されているか確認してから進行
+        if(state.currentQ === qi) goNext();
+      }, 500);
+    }
   }
-  renderQuestion();
 }
 
 function goBack() {
