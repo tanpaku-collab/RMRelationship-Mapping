@@ -113,7 +113,7 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
 .prog-track{height:4px;background:rgba(52,199,169,0.2);border-radius:4px;overflow:hidden}
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--tiffany),var(--tiffany-dark));border-radius:4px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1)}
 
-.q-card{background:white;border-radius:20px;padding:40px 36px;box-shadow:var(--shadow-md);margin-bottom:24px;border:1px solid rgba(52,199,169,0.1);animation:slideUp 0.4s cubic-bezier(0.4,0,0.2,1)}
+.q-card{background:white;border-radius:20px;padding:40px 36px;box-shadow:var(--shadow-md);margin-bottom:24px;border:1px solid rgba(52,199,169,0.1)}
 @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .q-num{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--tiffany-dark);margin-bottom:16px;letter-spacing:0.1em}
 .q-text{font-size:clamp(15px,2.5vw,18px);font-weight:500;color:var(--ink);line-height:1.7;margin-bottom:20px;font-family:'Noto Serif JP',serif}
@@ -644,7 +644,7 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
     <div class="ptype-q">パートナーに最も近いタイプを選んでください</div>
     <div class="ptype-opts" id="ptype-opts"></div>
     <div class="quiz-nav" style="margin-top:24px">
-      <div></div>
+      <button class="btn-back" id="btn-ptype-back">← 戻る</button>
       <button class="btn-next" id="btn-ptype-next" disabled>結果を見る →</button>
     </div>
   </div>
@@ -986,22 +986,14 @@ function renderQuestion() {
 
   // 選択状態
   var selectedCount = ranks.filter(function(x){ return x!==null; }).length;
-  var isFull = (selectedCount === 2); // 2つ選択済み
 
   // カード生成
   var wrap = document.getElementById('q-card-wrap');
   var html = '<div class="q-card">';
   html += '<div class="q-num">Question ' + (qi+1) + '</div>';
   html += '<div class="q-text">' + esc(q.text) + '</div>';
-  // ヒント：選択数に応じて変化
-  if(isFull){
-    html += '<div class="rank-hint rank-hint-done">✅ 2つ選択済み。次の設問へ進みます…</div>';
-  } else if(selectedCount === 1){
-    html += '<div class="rank-hint">もう1つ選ぶか、このまま<strong>「次へ」</strong>で進めます</div>';
-  } else {
-    html += '<div class="rank-hint">最もあてはまるものを<strong>1〜2つ</strong>選んでください（2つ選ぶと自動で次へ）</div>';
-  }
-  html += '<div class="opts" style="' + (isFull ? 'pointer-events:none;opacity:0.7' : '') + '">';
+  html += '<div class="rank-hint">最もあてはまるものを<strong>1〜2つ</strong>選んでください（選択後に「次へ」で進む）</div>';
+  html += '<div class="opts">';
 
   for(var oi=0; oi<q.opts.length; oi++){
     var opt = q.opts[oi];
@@ -1038,23 +1030,18 @@ function toggleRank(label) {
     r[existIdx] = null;
     var filled = r.filter(function(x){ return x!==null; });
     state.rankings[qi] = [filled[0]||null, filled[1]||null];
-    renderQuestion();
   } else {
     // 未選択 → 空きスロットへ追加（最大2つ）
     var emptyIdx = r.indexOf(null);
-    if(emptyIdx === -1) return; // 2つ選択済みなら無視
+    if(emptyIdx === -1) {
+      // 2つ選択済みの場合は1位を解除して新しい選択を1位に繰り上げ
+      // → 何もしない（既存の選択を維持し解除から始める）
+      return;
+    }
     r[emptyIdx] = label;
     state.rankings[qi] = r;
-    renderQuestion();
-
-    // 2つ選んだ瞬間に0.5秒後自動進行
-    if(r[0] !== null && r[1] !== null) {
-      setTimeout(function(){
-        // まだ同じ問に居て、選択が維持されているか確認してから進行
-        if(state.currentQ === qi) goNext();
-      }, 500);
-    }
   }
+  renderQuestion();
 }
 
 function goBack() {
@@ -1446,6 +1433,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   /* ③ パートナー選択の「結果を見る」 */
   document.getElementById('btn-ptype-next').addEventListener('click', showResult);
+
+  /* ③-b パートナー選択の「戻る」 → 最後の診断設問に戻る */
+  var btnPtypeBack = document.getElementById('btn-ptype-back');
+  if(btnPtypeBack) btnPtypeBack.addEventListener('click', function(){
+    // 診断画面に戻り、最後の設問を表示
+    showScreen('screen-quiz');
+    renderQuestion();
+  });
 
   /* ④ 結果画面の「もう一度診断する」 */
   document.getElementById('btn-restart').addEventListener('click', restart);
