@@ -292,7 +292,7 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
   .ptype-emoji-badge{width:36px;height:36px;font-size:16px}
 
   /* 結果画面 */
-  .res-card{padding:20px 16px}
+  .res-card{padding:20px 20px}
   .type-pair{gap:10px}
   .type-badge{padding:14px 10px;font-size:13px}
   .tb-emoji{font-size:22px}
@@ -301,8 +301,26 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
   .type-x{font-size:18px;flex-shrink:0}
   .fi{padding:10px 12px}
   .word-text{font-size:clamp(14px,4vw,18px)}
-  .prob-list li,.act-list li{font-size:13px;gap:8px}
-  .act-role{font-size:9px}
+  /* prob-list・act-list：余白・フォント・行間を最適化 */
+  .prob-list li,.act-list li{
+    font-size:13px;
+    gap:8px;
+    line-height:1.65;
+    padding:10px 0;
+    overflow-wrap:break-word;
+    word-break:keep-all;
+    min-width:0;
+  }
+  .prob-list li span:last-child,
+  .act-list li span:last-child{
+    flex:1;
+    min-width:0;
+    overflow-wrap:break-word;
+    word-break:keep-all;
+  }
+  .act-role{font-size:9px;margin-bottom:3px}
+  .card-body{font-size:13px;line-height:1.8}
+  .bul-pr,.bul-s,.bul-p{font-size:10px;margin-top:4px}
 }
 
 /* ─── 画像プレースホルダー ─── */
