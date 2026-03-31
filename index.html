@@ -515,6 +515,64 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
   .tdef-text{font-size:13px}
   .tdef-action-list li{font-size:13px}
 }
+/* ─── 心の充電池チェック画面 ─── */
+.battery-screen{min-height:100vh;background:linear-gradient(160deg,#F0FAF8 0%,#FFFFFF 60%,#F4FEFA 100%);padding:60px 24px 100px}
+.battery-wrap{max-width:640px;margin:0 auto}
+.battery-header{text-align:center;margin-bottom:36px}
+.battery-badge{display:inline-block;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--tiffany-dark);background:rgba(52,199,169,0.10);border:1px solid rgba(52,199,169,0.3);padding:6px 20px;border-radius:40px;margin-bottom:16px}
+.battery-title{font-family:var(--serif);font-size:clamp(22px,5vw,34px);color:var(--ink);font-weight:300;margin-bottom:8px;line-height:1.3}
+.battery-desc{font-size:14px;color:var(--text-muted);line-height:1.8}
+.battery-progress{margin-bottom:32px}
+.battery-prog-label{font-size:12px;color:var(--tiffany-dark);margin-bottom:8px;letter-spacing:0.1em}
+.battery-prog-track{height:4px;background:rgba(52,199,169,0.2);border-radius:4px;overflow:hidden}
+.battery-prog-fill{height:100%;background:linear-gradient(90deg,var(--tiffany),var(--tiffany-dark));border-radius:4px;transition:width 0.4s ease}
+.bq-card{background:white;border-radius:16px;padding:28px 24px;box-shadow:var(--shadow-md);margin-bottom:20px;border:1px solid rgba(52,199,169,0.1)}
+.bq-text{font-size:clamp(15px,2.5vw,17px);font-weight:500;color:var(--ink);line-height:1.6;margin-bottom:20px;font-family:'Noto Serif JP',serif}
+.bq-btns{display:flex;gap:12px}
+.bq-btn{flex:1;padding:14px;border-radius:40px;border:1.5px solid;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all 0.2s}
+.bq-btn-yes{border-color:rgba(52,199,169,0.4);background:rgba(52,199,169,0.08);color:var(--tiffany-dark)}
+.bq-btn-yes:hover,.bq-btn-yes.selected{background:var(--tiffany);border-color:var(--tiffany-dark);color:white}
+.bq-btn-no{border-color:var(--beige-mid);background:var(--beige);color:var(--text-muted)}
+.bq-btn-no:hover,.bq-btn-no.selected{background:var(--ink);border-color:var(--ink);color:white}
+
+/* バッテリー表示カード（結果画面） */
+.batt-card{border-radius:var(--radius);padding:28px 24px;margin-bottom:24px;position:relative;overflow:hidden}
+.batt-card.lv1{background:linear-gradient(135deg,rgba(52,199,169,0.12),rgba(52,199,169,0.04));border:1.5px solid rgba(52,199,169,0.35)}
+.batt-card.lv2{background:linear-gradient(135deg,rgba(255,200,60,0.10),rgba(255,200,60,0.03));border:1.5px solid rgba(255,200,60,0.4)}
+.batt-card.lv3{background:linear-gradient(135deg,rgba(255,140,60,0.10),rgba(255,140,60,0.03));border:1.5px solid rgba(255,140,60,0.4)}
+.batt-card.lv4{background:linear-gradient(135deg,rgba(230,80,60,0.10),rgba(230,80,60,0.03));border:1.5px solid rgba(230,80,60,0.35)}
+.batt-top{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.batt-icon-wrap{position:relative;flex-shrink:0}
+.batt-icon{font-size:48px;line-height:1;display:block}
+.batt-pct{position:absolute;bottom:-4px;right:-4px;font-size:10px;font-weight:700;background:white;border-radius:10px;padding:1px 5px;border:1px solid;white-space:nowrap}
+.lv1 .batt-pct{color:var(--tiffany-dark);border-color:rgba(52,199,169,0.4)}
+.lv2 .batt-pct{color:#C49A00;border-color:rgba(255,200,60,0.5)}
+.lv3 .batt-pct{color:#D06A00;border-color:rgba(255,140,60,0.5)}
+.lv4 .batt-pct{color:#C0392B;border-color:rgba(230,80,60,0.5)}
+.batt-info{}
+.batt-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px}
+.lv1 .batt-label{color:var(--tiffany-dark)}
+.lv2 .batt-label{color:#C49A00}
+.lv3 .batt-label{color:#D06A00}
+.lv4 .batt-label{color:#C0392B}
+.batt-level-name{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--ink);margin-bottom:4px;line-height:1.2}
+.batt-status{font-size:13px;color:var(--text-muted)}
+.batt-bar-wrap{height:8px;background:rgba(30,41,59,0.08);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.batt-bar-fill{height:100%;border-radius:8px;transition:width 0.8s ease}
+.lv1 .batt-bar-fill{background:linear-gradient(90deg,var(--tiffany),var(--tiffany-dark))}
+.lv2 .batt-bar-fill{background:linear-gradient(90deg,#FFD060,#C49A00)}
+.lv3 .batt-bar-fill{background:linear-gradient(90deg,#FFB060,#D06A00)}
+.lv4 .batt-bar-fill{background:linear-gradient(90deg,#FF7060,#C0392B)}
+.batt-message{font-size:14px;color:var(--text);line-height:1.8}
+.batt-yes-count{font-size:12px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:600px){
+  .battery-screen{padding:40px 16px 100px}
+  .bq-card{padding:22px 18px}
+  .batt-card{padding:20px 18px}
+  .batt-icon{font-size:40px}
+  .batt-level-name{font-size:17px}
+}
 </style>
 </head>
 <body>
@@ -664,6 +722,26 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
   </div>
 </div>
 
+<!-- ══════════ 心の充電池チェック画面 ══════════ -->
+<div id="screen-battery" class="screen battery-screen">
+  <div class="battery-wrap">
+    <div class="battery-header">
+      <div class="battery-badge">心の充電池チェック</div>
+      <h2 class="battery-title">今のあなたの<br>エネルギー残量は？</h2>
+      <p class="battery-desc">10個の質問に「YES / NO」で答えてください。<br>あなたの心の状態を可視化します。</p>
+    </div>
+    <div class="battery-progress">
+      <div class="battery-prog-label" id="batt-prog-label">Q1 / 10</div>
+      <div class="battery-prog-track"><div class="battery-prog-fill" id="batt-prog-fill" style="width:0%"></div></div>
+    </div>
+    <div id="bq-card-wrap"></div>
+    <div class="quiz-nav" style="margin-top:20px">
+      <button class="btn-back" id="btn-batt-back">← 戻る</button>
+      <div></div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════ パートナー選択画面 ══════════ -->
 <div id="screen-ptype" class="screen quiz-screen">
   <div class="ptype-wrap">
@@ -695,6 +773,8 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
       <h2 class="res-title" id="res-title">—</h2>
       <div class="res-subtitle" id="res-subtitle">—</div>
     </div>
+    <!-- 充電レベルカード -->
+    <div id="batt-result-card"></div>
     <!-- クリック可能なタイプバッジペア -->
     <div class="type-pair" id="type-pair"></div>
     <!-- タイプ解説カード（バッジクリックで切り替え） -->
@@ -1139,12 +1219,95 @@ function startAnalyzing(selfType) {
   }
   step(0);
 
-  // 3秒後にパートナー選択へ
+  // 3秒後に心の充電池チェックへ
   setTimeout(function(){
     bar.style.width = '100%';
     label.textContent = '解析完了';
-    setTimeout(function(){ showPartnerSelect(); }, 400);
+    setTimeout(function(){ showBatteryCheck(); }, 400);
   }, 3000);
+}
+
+/* ════════════════════════════════════
+   心の充電池チェック
+════════════════════════════════════ */
+var BATTERY_QS = [
+  '最近、理由もなくイライラすることがある',
+  '夫の言動にすぐ反応（過敏に）してしまう',
+  '「なんで私ばっかり」と思うことがある',
+  '本当は寂しいのに、うまく言えない',
+  '自分の気持ちより相手を優先している',
+  '何をしても満たされない感じがする',
+  '一人の時間があっても、心が休まらない',
+  '夫と話すのが少し面倒に感じる',
+  '小さなことで落ち込んだり引きずる',
+  '自分を責めることが多い'
+];
+
+var BATTERY_LEVELS = [
+  {lv:1, cls:'lv1', emoji:'🔋', range:'80〜100%', name:'良好・安定',    msg:'今の状態、すごくいい✨ 心のエネルギーがしっかり満ちています。この状態を大切に維持していきましょう。'},
+  {lv:2, cls:'lv2', emoji:'🔋', range:'50〜70%', name:'微減・要注意',  msg:'少し消耗中。無理すると一気に減るゾーンです。意識的に休む時間を作り、自分を回復させてあげましょう。'},
+  {lv:3, cls:'lv3', emoji:'🪫', range:'20〜40%', name:'消耗・危険',    msg:'かなり疲れている状態。感情に飲まれやすくなっています。今すぐ、誰かに頼ったり、一人の時間を確保しましょう。'},
+  {lv:4, cls:'lv4', emoji:'🪫', range:'0〜10%',  name:'枯渇・緊急休息', msg:'要充電⚠️ 頑張りすぎているサインです。まず休むことが最優先。自分を大切にすることは、わがままではありません。'}
+];
+
+/* yesカウントからレベルオブジェクトを返す */
+function getBatteryLevel(yesCount) {
+  if(yesCount <= 2) return BATTERY_LEVELS[0];
+  if(yesCount <= 5) return BATTERY_LEVELS[1];
+  if(yesCount <= 8) return BATTERY_LEVELS[2];
+  return BATTERY_LEVELS[3];
+}
+
+/* バーの幅（%）を返す */
+function getBatteryBarWidth(lv) {
+  var map = {1:90, 2:62, 3:32, 4:8};
+  return map[lv] || 50;
+}
+
+/* 充電池チェック画面の表示 */
+var battState = {currentQ: 0, answers: []}; // YES=true, NO=false
+
+function showBatteryCheck() {
+  battState.currentQ = 0;
+  battState.answers = [];
+  showScreen('screen-battery');
+  renderBatteryQuestion();
+}
+
+function renderBatteryQuestion() {
+  var qi = battState.currentQ;
+  // プログレス更新
+  document.getElementById('batt-prog-label').textContent = 'Q' + (qi+1) + ' / ' + BATTERY_QS.length;
+  document.getElementById('batt-prog-fill').style.width = Math.round(qi / BATTERY_QS.length * 100) + '%';
+
+  var ans = battState.answers[qi]; // undefined / true / false
+  var html = '<div class="bq-card">';
+  html += '<div class="bq-text">' + esc(BATTERY_QS[qi]) + '</div>';
+  html += '<div class="bq-btns">';
+  html += '<button class="bq-btn bq-btn-yes' + (ans === true ? ' selected' : '') + '" data-bq="yes">YES</button>';
+  html += '<button class="bq-btn bq-btn-no'  + (ans === false ? ' selected' : '') + '" data-bq="no">NO</button>';
+  html += '</div></div>';
+  document.getElementById('bq-card-wrap').innerHTML = html;
+
+  document.getElementById('btn-batt-back').disabled = (qi === 0);
+}
+
+function answerBattery(isYes) {
+  var qi = battState.currentQ;
+  battState.answers[qi] = isYes;
+  renderBatteryQuestion(); // ボタン選択状態を更新
+
+  // 0.35秒後に自動進行
+  setTimeout(function(){
+    if(battState.currentQ !== qi) return; // 既に進んでいる場合はスキップ
+    if(qi < BATTERY_QS.length - 1){
+      battState.currentQ++;
+      renderBatteryQuestion();
+    } else {
+      // 全問完了 → パートナー選択へ
+      showPartnerSelect();
+    }
+  }, 350);
 }
 
 /* ════════════════════════════════════
@@ -1205,6 +1368,27 @@ function showResult() {
   document.getElementById('res-title').innerHTML =
     '<em>' + esc(self.name) + '</em><br><span style="font-size:0.55em;color:rgba(255,255,255,0.35)">×</span><br><em class="gold">' + esc(partner.name) + '</em>';
   document.getElementById('res-subtitle').textContent = '「' + d.title + '」';
+
+  // 充電レベルカード
+  var yesCount = battState.answers.filter(function(a){ return a === true; }).length;
+  var bl = getBatteryLevel(yesCount);
+  var barW = getBatteryBarWidth(bl.lv);
+  document.getElementById('batt-result-card').innerHTML =
+    '<div class="batt-card ' + bl.cls + '">' +
+      '<div class="batt-top">' +
+        '<div class="batt-icon-wrap">' +
+          '<span class="batt-icon">' + bl.emoji + '</span>' +
+          '<span class="batt-pct">' + bl.range + '</span>' +
+        '</div>' +
+        '<div class="batt-info">' +
+          '<div class="batt-label">心の充電レベル Lv' + bl.lv + '</div>' +
+          '<div class="batt-level-name">' + esc(bl.name) + '</div>' +
+          '<div class="batt-status">YES回答 ' + yesCount + ' / 10問</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="batt-bar-wrap"><div class="batt-bar-fill" style="width:' + barW + '%"></div></div>' +
+      '<div class="batt-message">' + esc(bl.msg) + '</div>' +
+    '</div>';
 
   // タイプバッジ（クリック可能）
   document.getElementById('type-pair').innerHTML =
@@ -1429,6 +1613,8 @@ function resCard(iconCls, iconEmoji, titleCls, title, bodyHtml) {
 ════════════════════════════════════ */
 function restart() {
   initState();
+  battState.currentQ = 0;
+  battState.answers = [];
   var fb = document.querySelector('.floating-btn');
   if(fb) fb.style.display = '';
   showScreen('screen-lp');
@@ -1508,6 +1694,22 @@ document.addEventListener('DOMContentLoaded', function() {
     if(!badge) return;
     var typeKey = badge.getAttribute('data-type');
     if(typeKey) switchDefCard(typeKey, badge);
+  });
+
+  /* ⑨ 充電池チェックの回答ボタン（イベント委譲） */
+  document.getElementById('bq-card-wrap').addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-bq]');
+    if(!btn) return;
+    answerBattery(btn.getAttribute('data-bq') === 'yes');
+  });
+
+  /* ⑩ 充電池チェックの「戻る」ボタン */
+  var btnBattBack = document.getElementById('btn-batt-back');
+  if(btnBattBack) btnBattBack.addEventListener('click', function(){
+    if(battState.currentQ > 0){
+      battState.currentQ--;
+      renderBatteryQuestion();
+    }
   });
 });
 </script>
