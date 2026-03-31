@@ -327,7 +327,7 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
 .hero-img-wrap{margin-top:40px;padding:0 24px}
 .hero-img{width:100%;max-width:680px;border-radius:16px;display:block;margin:0 auto;object-fit:cover;box-shadow:0 4px 24px rgba(30,41,59,0.08)}
 .lp-img-row{text-align:center;padding:0 24px}
-.lp-img-wide{width:100%;max-width:900px;border-radius:12px;display:block;margin:0 auto 32px;object-fit:cover;box-shadow:0 4px 20px rgba(30,41,59,0.09)}
+.lp-img-wide{width:100%;max-width:900px;border-radius:12px;display:block;margin:0 auto 48px;object-fit:cover;box-shadow:0 4px 20px rgba(30,41,59,0.09)}
 .lp-img-cta{width:100%;max-width:520px;border-radius:12px;display:block;margin:0 auto;object-fit:cover;box-shadow:0 4px 20px rgba(30,41,59,0.09)}
 
 /* ─── 解析中アニメーション ─── */
@@ -755,6 +755,8 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
       </div>
       <!-- タイプ詳細解説（クリックで展開） -->
       <div id="ptype-self-def" style="display:none;margin-bottom:24px"></div>
+      <!-- 心の充電レベル（タイプ詳細の下・パートナー選択の前） -->
+      <div id="ptype-batt-card" style="margin-bottom:24px"></div>
     </div>
     <div class="ptype-q">パートナーに最も近いタイプを選んでください</div>
     <div class="ptype-opts" id="ptype-opts"></div>
@@ -773,8 +775,6 @@ body{font-family:var(--sans);background:var(--beige);color:var(--text);line-heig
       <h2 class="res-title" id="res-title">—</h2>
       <div class="res-subtitle" id="res-subtitle">—</div>
     </div>
-    <!-- 充電レベルカード -->
-    <div id="batt-result-card"></div>
     <!-- クリック可能なタイプバッジペア -->
     <div class="type-pair" id="type-pair"></div>
     <!-- タイプ解説カード（バッジクリックで切り替え） -->
@@ -1342,6 +1342,30 @@ function showPartnerSelect() {
     defEl.style.display = 'block';
     defEl.style.animation = 'slideUp 0.35s ease';
   }
+
+  /* 充電レベルカードを解説カードの下・パートナー選択の直前に表示 */
+  var battCard = document.getElementById('ptype-batt-card');
+  if(battCard) {
+    var yesCount = battState.answers.filter(function(a){ return a === true; }).length;
+    var bl = getBatteryLevel(yesCount);
+    var barW = getBatteryBarWidth(bl.lv);
+    battCard.innerHTML =
+      '<div class="batt-card ' + bl.cls + '">' +
+        '<div class="batt-top">' +
+          '<div class="batt-icon-wrap">' +
+            '<span class="batt-icon">' + bl.emoji + '</span>' +
+            '<span class="batt-pct">' + bl.range + '</span>' +
+          '</div>' +
+          '<div class="batt-info">' +
+            '<div class="batt-label">心の充電レベル Lv' + bl.lv + '</div>' +
+            '<div class="batt-level-name">' + esc(bl.name) + '</div>' +
+            '<div class="batt-status">YES回答 ' + yesCount + ' / 10問</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="batt-bar-wrap"><div class="batt-bar-fill" style="width:' + barW + '%"></div></div>' +
+        '<div class="batt-message">' + esc(bl.msg) + '</div>' +
+      '</div>';
+  }
 }
 
 function selectPartner(k) {
@@ -1368,27 +1392,6 @@ function showResult() {
   document.getElementById('res-title').innerHTML =
     '<em>' + esc(self.name) + '</em><br><span style="font-size:0.55em;color:rgba(255,255,255,0.35)">×</span><br><em class="gold">' + esc(partner.name) + '</em>';
   document.getElementById('res-subtitle').textContent = '「' + d.title + '」';
-
-  // 充電レベルカード
-  var yesCount = battState.answers.filter(function(a){ return a === true; }).length;
-  var bl = getBatteryLevel(yesCount);
-  var barW = getBatteryBarWidth(bl.lv);
-  document.getElementById('batt-result-card').innerHTML =
-    '<div class="batt-card ' + bl.cls + '">' +
-      '<div class="batt-top">' +
-        '<div class="batt-icon-wrap">' +
-          '<span class="batt-icon">' + bl.emoji + '</span>' +
-          '<span class="batt-pct">' + bl.range + '</span>' +
-        '</div>' +
-        '<div class="batt-info">' +
-          '<div class="batt-label">心の充電レベル Lv' + bl.lv + '</div>' +
-          '<div class="batt-level-name">' + esc(bl.name) + '</div>' +
-          '<div class="batt-status">YES回答 ' + yesCount + ' / 10問</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="batt-bar-wrap"><div class="batt-bar-fill" style="width:' + barW + '%"></div></div>' +
-      '<div class="batt-message">' + esc(bl.msg) + '</div>' +
-    '</div>';
 
   // タイプバッジ（クリック可能）
   document.getElementById('type-pair').innerHTML =
